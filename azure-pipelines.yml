@@ -153,6 +153,7 @@ jobs:
   dependsOn:
    - win
    - win_2019
+   - win_2019_android
   condition: succeeded()
   pool:
     name: $(winVmImage)
