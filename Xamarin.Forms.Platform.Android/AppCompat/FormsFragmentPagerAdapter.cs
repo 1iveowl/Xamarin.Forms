@@ -18,7 +18,11 @@ namespace Xamarin.Forms.Platform.Android.AppCompat
 		List<Fragment> _fragments;
 		bool _disposed;
 
+#if __ANDROID_29__
+		public FormsFragmentPagerAdapter(MultiPage<T> page, FragmentManager fragmentManager) : base(fragmentManager, FragmentStatePagerAdapter.BehaviorResumeOnlyCurrentFragment)
+#else
 		public FormsFragmentPagerAdapter(MultiPage<T> page, FragmentManager fragmentManager) : base(fragmentManager)
+#endif
 		{
 			_page = page;
 			_fragmentManager = fragmentManager;
