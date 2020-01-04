@@ -361,6 +361,7 @@ namespace Xamarin.Forms.Platform.iOS
 			_ = _context.ApplyNativeImageAsync(ShellSection, ShellSection.IconProperty, icon =>
 			{
 				TabBarItem = new UITabBarItem(ShellSection.Title, icon, null);
+				TabBarItem.AccessibilityIdentifier = ShellSection.AutomationId ?? ShellSection.Title;
 			});
 		}
 

@@ -641,8 +641,15 @@ namespace Xamarin.Forms.Controls
 
 		public ContentPage AddBottomTab(string title)
 		{
-
 			ContentPage page = new ContentPage();
+			if (Items.Count == 0)
+			{
+				var item = AddContentPage(page);
+				item.Items[0].Items[0].Title = title ?? page.Title;
+				item.Items[0].Title = title ?? page.Title;
+				return page;
+			}
+
 			Items[0].Items.Add(new ShellSection()
 			{
 				Title = title,

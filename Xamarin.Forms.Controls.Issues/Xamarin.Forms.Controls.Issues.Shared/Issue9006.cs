@@ -22,18 +22,22 @@ namespace Xamarin.Forms.Controls.Issues
 			Routing.RegisterRoute("Issue9006_ContentPage", typeof(ContentPage));
 			Routing.RegisterRoute("Issue9006_FinalPage", typeof(ContentPage));
 
-			var contentPage = AddBottomTab("Click Me");
+			var contentPage = AddBottomTab("Tab 1");
+			Items[0].CurrentItem.AutomationId = "Tab1AutomationId";
 			AddBottomTab("Ignore Me");
 
 			Label label = new Label()
 			{
-				Text = "Clicking on the tab labeled 'Click Me' should pop you back to the root"
+				Text = "Clicking on the first tab should pop you back to the root",
+				AutomationId = "FinalLabel"
 			};
 
 			Button button = null;
+			bool navigated = false;
 			button = new Button()
 			{
 				Text = "Click Me",
+				AutomationId = "Click Me",
 				Command = new Command(async () =>
 				{
 					await GoToAsync("Issue9006_ContentPage");
@@ -47,6 +51,10 @@ namespace Xamarin.Forms.Controls.Issues
 							label
 						}
 					};
+					if (navigated)
+						label.Text = "Success";
+
+					navigated = true;
 				})
 			};
 
@@ -64,6 +72,11 @@ namespace Xamarin.Forms.Controls.Issues
 		[Test]
 		public void ClickingOnTabToPopToRootDoesntBreakNavigation()
 		{
+			RunningApp.Tap("Click Me");
+			RunningApp.WaitForElement("FinalLabel");
+			RunningApp.Tap("Tab1AutomationId");
+			RunningApp.Tap("Click Me");
+			RunningApp.Tap("Success");
 		}
 #endif
 	}
