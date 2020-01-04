@@ -21,8 +21,7 @@ namespace Xamarin.Forms
 
 		void SendInsetChanged(Thickness inset, double tabThickness);
 
-		void SendPopped();
-		void SendPopping(Page page);
-		void SendPopped(Page page);
+		void SendPopping(Task poppingCompleted);
+		void SendPoppingToRoot(Task finishedPopping);
 	}
 }

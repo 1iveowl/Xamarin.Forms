@@ -118,35 +118,40 @@ namespace Xamarin.Forms
 			_lastTabThickness = tabThickness;
 		}
 
-		void IShellSectionController.SendPopped()
+		async void IShellSectionController.SendPopping(Task poppingCompleted)
 		{
 			if (_navStack.Count <= 1)
 				throw new Exception("Nav Stack consistency error");
 
-			var last = _navStack[_navStack.Count - 1];
-			_navStack.Remove(last);
-
-			RemovePage(last);
-
-			SendUpdateCurrentState(ShellNavigationSource.Pop);
-		}
-
-		void IShellSectionController.SendPopping(Page page)
-		{
-			if (_navStack.Count <= 1)
-				throw new Exception("Nav Stack consistency error");
+			var page = _navStack[_navStack.Count - 1];
 
 			_navStack.Remove(page);
-			SendAppearanceChanged();
-		}
+			UpdateDisplayedPage();
 
-		void IShellSectionController.SendPopped(Page page)
-		{
-			if(_navStack.Contains(page))
-				_navStack.Remove(page);
+			await poppingCompleted;
 
 			RemovePage(page);
 			SendUpdateCurrentState(ShellNavigationSource.Pop);
+		}
+
+		async void IShellSectionController.SendPoppingToRoot(Task finishedPopping)
+		{
+			if (_navStack.Count <= 1)
+				throw new Exception("Nav Stack consistency error");
+
+			var oldStack = _navStack;
+			_navStack = new List<Page> { null };
+
+			for (int i = 1; i < oldStack.Count; i++)
+				oldStack[i].SendDisappearing();
+
+			UpdateDisplayedPage();
+			await finishedPopping;
+
+			for (int i = 1; i < oldStack.Count; i++)
+				RemovePage(oldStack[i]);
+
+			SendUpdateCurrentState(ShellNavigationSource.PopToRoot);
 		}
 
 		#endregion IShellSectionController
@@ -313,6 +318,7 @@ namespace Xamarin.Forms
 
 			if (previousPage != DisplayedPage)
 			{
+				previousPage?.SendDisappearing();
 				PresentedPageAppearing();
 				SendAppearanceChanged();
 			}

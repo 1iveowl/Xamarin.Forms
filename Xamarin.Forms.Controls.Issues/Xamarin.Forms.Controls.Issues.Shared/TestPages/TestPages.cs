@@ -602,6 +602,14 @@ namespace Xamarin.Forms.Controls
 #endif
 		}
 
+		protected ContentPage DisplayedPage
+		{
+			get
+			{
+				return (ContentPage)(CurrentItem.CurrentItem as IShellSectionController).PresentedPage;
+			}
+		}
+
 		public ContentPage AddTopTab(string title)
 		{
 			var page = new ContentPage();
